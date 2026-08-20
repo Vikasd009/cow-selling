@@ -3,6 +3,7 @@ package com.vikas.cowselling.service;
 import com.vikas.cowselling.dto.request.LoginRequest;
 import com.vikas.cowselling.dto.request.RegisterRequest;
 import com.vikas.cowselling.dto.request.response.AuthResponse;
+import com.vikas.cowselling.dto.request.response.UserResponse;
 import com.vikas.cowselling.entity.User;
 import com.vikas.cowselling.enums.UserRole;
 import com.vikas.cowselling.exception.BadRequestException;
@@ -15,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -93,12 +95,12 @@ class AuthServiceImplTest {
         )).thenReturn(savedUser);
 
         when(jwtService.generateToken(
-                any(User.class)
+                any(UserDetails.class)
         )).thenReturn(
                 "jwt-token"
         );
 
-        AuthResponse response =
+        UserResponse response =
                 authService.register(
                         registerRequest
                 );
@@ -107,7 +109,7 @@ class AuthServiceImplTest {
 
         assertEquals(
                 "jwt-token",
-                response.getToken()
+                response.getActive()
         );
 
         verify(
